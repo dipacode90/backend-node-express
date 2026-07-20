@@ -1,0 +1,15 @@
+// src/config/database.js
+const { Sequelize } = require('sequelize');
+
+const sequelize = new Sequelize(
+    process.env.DB_NAME,
+    process.env.DB_USER,
+    process.env.DB_PASSWORD,
+    {
+        host: process.env.DB_HOST,
+        dialect: 'mysql',
+        logging: false // Ubah ke console.log jika ingin melihat log query SQL di terminal
+    }
+);
+
+module.exports = sequelize;
