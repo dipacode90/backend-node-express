@@ -48,7 +48,7 @@ const FinancialGoals = sequelize.define('FinancialGoals', {
         field: 'deskripsi'
     }
 }, {
-    tableName: 'Financial_Goals', // Padanan dari @Table(name = "Financial_Goals")
+    tableName: 'financial_goals', // Padanan dari @Table(name = "Financial_Goals")
     timestamps: false
 });
 

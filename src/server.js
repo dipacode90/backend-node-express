@@ -48,6 +48,20 @@ app.get('/', (req, res) => {
     res.send('Backend Finance Node.js is running...');
 });
 
-app.listen(PORT, () => {
-    console.log(`Server is running on port ${PORT}`);
-});
+// Ini untuk di local
+// app.listen(PORT, () => {
+//     console.log(`Server is running on port ${PORT}`);
+// });
+
+// Hapus atau comment kode app.listen yang lama
+// Ganti menjadi:
+
+if (process.env.NODE_ENV !== 'production') {
+  const PORT = process.env.PORT || 3000;
+  app.listen(PORT, () => {
+    console.log(`Server is running on port ${PORT}.`);
+  });
+}
+
+// Baris ini wajib untuk Vercel
+module.exports = app;

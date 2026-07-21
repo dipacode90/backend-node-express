@@ -42,7 +42,7 @@ const Tabungan = sequelize.define('Tabungan', {
         field: 'keterangan'
     }
 }, {
-    tableName: 'Tabungan', // Padanan dari @Table(name = "Tabungan")
+    tableName: 'tabungan', // Padanan dari @Table(name = "Tabungan")
     timestamps: false
 });
 
