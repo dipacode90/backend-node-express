@@ -11,5 +11,10 @@
       "src": "/(.*)",
       "dest": "src/server.js"
     }
-  ]
+  ],
+  "functions": {
+    "src/**/*.js": {
+      "includeFiles": "node_modules/mysql2/**"
+    }
+  }
 }
