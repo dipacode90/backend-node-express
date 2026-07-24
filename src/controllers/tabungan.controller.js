@@ -76,3 +76,34 @@ exports.saveTabungan = async (req, res) => {
         return res.status(500).json({ error: "Terjadi kesalahan pada server: " + error.message });
     }
 };
+
+// ================= FUNGSI BARU: DELETE TABUNGAN =================
+exports.deleteTabungan = async (req, res) => {
+    const { idTabungan } = req.params;
+
+    if (!idTabungan) {
+        return res.status(400).json({ error: "ID Tabungan wajib diisi!" });
+    }
+
+    const t = await sequelize.transaction();
+
+    try {
+        // 1. Cek apakah data tabungan yang ingin dihapus ada
+        const existingTabungan = await tabunganRepository.findById(idTabungan);
+        if (!existingTabungan) {
+            await t.rollback();
+            return res.status(404).json({ error: "Data Tabungan tidak ditemukan!" });
+        }
+
+        // 2. Lakukan proses hapus
+        await tabunganRepository.deleteById(idTabungan, t);
+
+        // 3. Commit transaksi jika sukses
+        await t.commit();
+        return res.status(200).json({ message: "Sukses menghapus transaksi tabungan!" });
+
+    } catch (error) {
+        await t.rollback();
+        return res.status(500).json({ error: "Terjadi kesalahan pada server: " + error.message });
+    }
+};

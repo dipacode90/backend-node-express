@@ -19,6 +19,15 @@ class TabunganRepository {
         throw new Error("Data Tabungan tidak ditemukan!");
     }
 
+    // ================= FUNGSI BARU =================
+    async deleteById(idTabungan, transaction = null) {
+        const tabungan = await Tabungan.findByPk(idTabungan);
+        if (tabungan) {
+            return await tabungan.destroy({ transaction: transaction });
+        }
+        throw new Error("Data Tabungan tidak ditemukan!");
+    }
+
     // Fungsi ini akan dipakai saat menghapus Financial Goal
     async deleteByGoalId(idGoal) {
         return await Tabungan.destroy({
