@@ -1,4 +1,4 @@
-import 'mysql2';
+require('mysql2');
 
 // src/config/database.js
 const { Sequelize } = require('sequelize');
