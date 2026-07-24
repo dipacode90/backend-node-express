@@ -20,8 +20,21 @@ const app = express();
 const PORT = process.env.PORT || 8080;
 
 // Konfigurasi CORS khusus untuk React Anda (Padanan dari @CrossOrigin di Java)
+// Konfigurasi CORS yang Fleksibel (Localhost & Vercel)
+const allowedOrigins = process.env.ALLOWED_ORIGINS 
+  ? process.env.ALLOWED_ORIGINS.split(',') 
+  : ['http://localhost:3000', 'http://localhost:5173'];
+
 app.use(cors({
-    origin: 'http://localhost:3000'
+  origin: function (origin, callback) {
+    // izinkan request tanpa origin (seperti Postman/mobile app)
+    if (!origin) return callback(null, true);
+    if (allowedOrigins.indexOf(origin) !== -1 || allowedOrigins.includes('*')) {
+      return callback(null, true);
+    }
+    return callback(new Error('Akses diblokir oleh sistem CORS'));
+  },
+  credentials: true
 }));
 
 app.use(express.json()); 
