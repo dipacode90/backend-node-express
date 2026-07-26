@@ -3,13 +3,13 @@ const express = require('express');
 const router = express.Router();
 const tabunganController = require('../controllers/tabungan.controller');
 
-// Endpoint untuk dropdown list goals di form tabungan
+// Endpoint: GET /api/tabungan/goals-list
 router.get('/goals-list', tabunganController.getGoalsList);
 
-// Endpoint untuk menyimpan atau mengupdate transaksi tabungan (Setor / Tarik)
-router.post('/tabungan', tabunganController.saveTabungan);
+// Endpoint: POST /api/tabungan (Simpan & Update)
+router.post('/', tabunganController.saveTabungan);
 
-// Tambahkan route DELETE berikut:
-router.delete('/tabungan/:idTabungan', tabunganController.deleteTabungan);
+// Endpoint: DELETE /api/tabungan/:idTabungan
+router.delete('/:idTabungan', tabunganController.deleteTabungan);
 
 module.exports = router;
