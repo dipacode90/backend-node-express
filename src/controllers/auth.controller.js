@@ -37,10 +37,12 @@ exports.login = async (req, res) => {
         // Membuat JWT Token berlaku selama 1 Jam ('1h')
         // Menggunakan sub (subject) dan claim nama seperti di Java Spring Anda
         const token = jwt.sign(
-            { 
-                sub: user.email, 
-                name: user.nama 
-            }, 
+            {
+                sub: user.email,
+                name: user.nama,
+                idUser: user.idUser,
+                role: user.role
+            },
             process.env.JWT_SECRET || 'supersecretkeyanda', // Kunci rahasia dari file .env
             { expiresIn: '1h' }
         );
@@ -53,7 +55,7 @@ exports.login = async (req, res) => {
             user: {
                 idUser: user.idUser,
                 nama: user.nama,
-                role: "User"
+                role: user.role
             }
         });
     } catch (error) {

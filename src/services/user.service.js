@@ -43,6 +43,61 @@ class UserService {
         // Jika lolos semua pengecekan, kembalikan data user ke controller
         return user;
     }
+
+    // 3. Logika untuk Admin: ambil semua user (tanpa password)
+    async getAllUsers() {
+        const users = await userRepository.findAll();
+        return users.map((user) => {
+            const { password, ...safeUser } = user.toJSON();
+            return safeUser;
+        });
+    }
+
+    // 4. Logika untuk Admin: membuat user baru lengkap dengan role
+    async createUser(nama, email, password, role) {
+        const userExists = await userRepository.findByEmail(email);
+        if (userExists) {
+            throw new Error("Email sudah digunakan!");
+        }
+
+        const saltRounds = 10;
+        const hashedPassword = await bcrypt.hash(password, saltRounds);
+
+        const user = await userRepository.save({
+            nama: nama,
+            email: email,
+            password: hashedPassword,
+            role: role || 'User'
+        });
+        const { password: _pw, ...safeUser } = user.toJSON();
+        return safeUser;
+    }
+
+    // 5. Logika untuk Admin: memperbarui data user (password opsional)
+    async updateUser(idUser, { nama, email, password, role }) {
+        const existing = await userRepository.findById(idUser);
+        if (!existing) {
+            throw new Error("User tidak ditemukan!");
+        }
+
+        const updateData = { idUser, nama, email, role };
+        if (password && password.trim()) {
+            updateData.password = await bcrypt.hash(password, 10);
+        }
+
+        const user = await userRepository.save(updateData);
+        const { password: _pw, ...safeUser } = user.toJSON();
+        return safeUser;
+    }
+
+    // 6. Logika untuk Admin: menghapus user
+    async deleteUser(idUser) {
+        const deleted = await userRepository.deleteById(idUser);
+        if (!deleted) {
+            throw new Error("User tidak ditemukan!");
+        }
+        return true;
+    }
 }
 
 // Eksport sebagai singleton instance seperti @Service di Spring

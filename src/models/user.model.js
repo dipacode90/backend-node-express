@@ -20,6 +20,11 @@ const User = sequelize.define('User', {
     password: {
         type: DataTypes.STRING(255),
         allowNull: false
+    },
+    role: {
+        type: DataTypes.STRING(20),
+        allowNull: false,
+        defaultValue: 'User'
     }
 }, {
     tableName: 'user', // Padanan dari @Table(name = "user")

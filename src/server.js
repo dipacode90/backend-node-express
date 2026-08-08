@@ -56,6 +56,10 @@ const tabunganRoutes = require('./routes/tabungan.routes');
 // 2. Tambahkan ini di bagian middleware routing
 app.use('/api/tabungan', tabunganRoutes);
 
+// Rute manajemen pengguna (khusus Admin)
+const userRoutes = require('./routes/user.routes');
+app.use('/api/users', userRoutes);
+
 // Cek server jalan
 app.get('/', (req, res) => {
     res.send('Backend Finance Node.js is running...');
