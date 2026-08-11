@@ -18,7 +18,7 @@ exports.getFinancialGoals = async (req, res) => {
 };
 
 exports.saveOrUpdateFinancialGoals = async (req, res) => {
-    const { idGoal, idUser, namaGoal, targetNominal, targetTanggal, prioritas, deskripsi } = req.body;
+    const { idGoal, idUser, namaGoal, targetNominal, targetTanggal, prioritas, deskripsi, status } = req.body;
 
     // 1. Validasi parameter wajib (Padanan if (dto.getIdUser() == null ...))
     if (!idUser || !namaGoal || !targetNominal || !targetTanggal) {
@@ -44,7 +44,8 @@ exports.saveOrUpdateFinancialGoals = async (req, res) => {
             targetNominal: targetNominal,
             targetTanggal: targetTanggal,
             prioritas: prioritas || "Sedang", // Default value jika null
-            deskripsi: deskripsi || ""        // Default value jika null
+            deskripsi: deskripsi || "",       // Default value jika null
+            status: status || "Progress"      // Default value jika null
         };
 
         if (idGoal) {

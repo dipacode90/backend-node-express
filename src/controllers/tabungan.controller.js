@@ -1,6 +1,7 @@
 // src/controllers/tabungan.controller.js
 const goalsRepository = require('../repositories/financialGoals.repository');
 const tabunganRepository = require('../repositories/tabungan.repository');
+const goalsService = require('../services/financialGoals.service');
 const sequelize = require('../config/database'); // Import sequelize untuk Transaction
 
 exports.getGoalsList = async (req, res) => {
@@ -63,8 +64,11 @@ exports.saveTabungan = async (req, res) => {
             await tabunganRepository.create(payloadData, t);
         }
 
-        // 4. COMMIT transaksi jika semua proses di atas berhasil tanpa error
-        await t.commit(); 
+        // 4. Hitung ulang total tabungan & sinkronkan status goal (Progress/Done)
+        await goalsService.recalculateGoalStatus(idGoal, t);
+
+        // 5. COMMIT transaksi jika semua proses di atas berhasil tanpa error
+        await t.commit();
 
         return res.status(200).json({ 
             message: isUpdate ? "Sukses memperbarui transaksi tabungan!" : "Sukses menyimpan transaksi tabungan!" 
@@ -96,9 +100,13 @@ exports.deleteTabungan = async (req, res) => {
         }
 
         // 2. Lakukan proses hapus
+        const idGoal = existingTabungan.idGoal;
         await tabunganRepository.deleteById(idTabungan, t);
 
-        // 3. Commit transaksi jika sukses
+        // 3. Hitung ulang total tabungan & sinkronkan status goal (Progress/Done)
+        await goalsService.recalculateGoalStatus(idGoal, t);
+
+        // 4. Commit transaksi jika sukses
         await t.commit();
         return res.status(200).json({ message: "Sukses menghapus transaksi tabungan!" });
 

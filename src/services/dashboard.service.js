@@ -71,7 +71,8 @@ class DashboardService {
                 targetNominal: targetNominal,
                 totalTerkumpul: totalTerkumpul,
                 sisaTarget: sisaTarget,
-                persentase: persentase
+                persentase: persentase,
+                status: goal.status
             });
 
             // Akumulasi ke total utama

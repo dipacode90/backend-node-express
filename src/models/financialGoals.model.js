@@ -43,9 +43,16 @@ const FinancialGoals = sequelize.define('FinancialGoals', {
     },
     deskripsi: {
         // Padanan columnDefinition = "TEXT"
-        type: DataTypes.TEXT, 
+        type: DataTypes.TEXT,
         allowNull: true,
         field: 'deskripsi'
+    },
+    status: {
+        // Menandakan progres goal: 'Progress' atau 'Done'. Otomatis jadi 'Done' saat total tabungan >= target
+        type: DataTypes.STRING(20),
+        allowNull: false,
+        field: 'status',
+        defaultValue: 'Progress'
     }
 }, {
     tableName: 'financial_goals', // Padanan dari @Table(name = "Financial_Goals")
