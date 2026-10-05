@@ -19,11 +19,8 @@ class FinancialGoalsService {
         return true;
     }
 
-    // Hitung ulang total tabungan suatu goal, lalu set status 'Done' otomatis jika sudah mencapai target
-    async recalculateGoalStatus(idGoal, transaction = null) {
-        const goal = await goalsRepository.findById(idGoal);
-        if (!goal) return;
-
+    // Hitung total terkumpul suatu goal (setor - tarik), opsional mengecualikan satu transaksi (untuk kasus edit)
+    async getTotalTerkumpul(idGoal, excludeIdTabungan = null, transaction = null) {
         const transaksi = await Tabungan.findAll({
             where: { idGoal: idGoal },
             transaction
@@ -31,6 +28,7 @@ class FinancialGoalsService {
 
         let totalTerkumpul = 0;
         for (const tx of transaksi) {
+            if (excludeIdTabungan && Number(tx.idTabungan) === Number(excludeIdTabungan)) continue;
             const nominal = Number(tx.nominal);
             if (tx.jenisTransaksi.toLowerCase() === 'setor') {
                 totalTerkumpul += nominal;
@@ -38,6 +36,15 @@ class FinancialGoalsService {
                 totalTerkumpul -= nominal;
             }
         }
+        return totalTerkumpul;
+    }
+
+    // Hitung ulang total tabungan suatu goal, lalu set status 'Done' otomatis jika sudah mencapai target
+    async recalculateGoalStatus(idGoal, transaction = null) {
+        const goal = await goalsRepository.findById(idGoal);
+        if (!goal) return;
+
+        const totalTerkumpul = await this.getTotalTerkumpul(idGoal, null, transaction);
 
         const statusBaru = totalTerkumpul >= Number(goal.targetNominal) ? 'Done' : 'Progress';
         if (goal.status !== statusBaru) {

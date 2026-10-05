@@ -38,6 +38,24 @@ exports.saveTabungan = async (req, res) => {
             return res.status(404).json({ error: "Target Financial Goal tidak ditemukan" });
         }
 
+        // Setoran tidak boleh membuat total tabungan melebihi target goal.
+        // Saat edit, transaksi lama dikecualikan dari perhitungan agar tidak terhitung dua kali.
+        if (jenisTransaksi.toLowerCase() === 'setor') {
+            const totalLain = await goalsService.getTotalTerkumpul(idGoal, idTabungan, t);
+            const sisaTarget = Number(goal.targetNominal) - totalLain;
+
+            if (sisaTarget <= 0) {
+                await t.rollback();
+                return res.status(400).json({ error: "Goal ini sudah tercapai, tidak bisa menabung lagi!" });
+            }
+            if (Number(nominal) > sisaTarget) {
+                await t.rollback();
+                return res.status(400).json({
+                    error: `Nominal melebihi target goal! Maksimal setoran: Rp ${Math.round(sisaTarget).toLocaleString('id-ID')}`
+                });
+            }
+        }
+
         const payloadData = {
             idGoal: idGoal,
             tanggal: tanggal,
