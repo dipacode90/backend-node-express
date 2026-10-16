@@ -56,6 +56,10 @@ const tabunganRoutes = require('./routes/tabungan.routes');
 // 2. Tambahkan ini di bagian middleware routing
 app.use('/api/tabungan', tabunganRoutes);
 
+// Rute prediksi tabungan (metode Single Exponential Smoothing)
+const prediksiRoutes = require('./routes/prediksi.routes');
+app.use('/api/prediksi', prediksiRoutes);
+
 // Rute manajemen pengguna (khusus Admin)
 const userRoutes = require('./routes/user.routes');
 app.use('/api/users', userRoutes);
